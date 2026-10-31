@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Design tokens: use these (bg-surface, text-muted, ...) instead of raw colours in components. */
+@theme {
+  --color-bg: #0b1020;
+  --color-surface: #141b2e;
+  --color-border: #263049;
+  --color-text: #e8ecf5;
+  --color-muted: #9aa5bd;
+  --color-accent: #4f8cff;
+  --color-danger: #ef4444;
+  --radius-card: 0.75rem;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
