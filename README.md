@@ -2,7 +2,7 @@
 
 Job agent portal: your job alert emails, turned into one ranked list, scored against your ATS resume, with a resume you can tailor per job.
 
-> Status: **Week 1 (in progress)**. Data layer is in; Google sign-in is next. The app is still a landing page and a health check; features arrive weekly (see the roadmap).
+> Status: **Week 1**. Data layer and Google sign-in are in; the signed-in dashboard is an empty shell until Gmail arrives in Week 2. Features arrive weekly (see the roadmap).
 
 ## Features (planned)
 
@@ -44,6 +44,15 @@ All data lives in one Google Sheet (one tab per entity, row 1 = header, columns 
 
 To prepare the sheet (needed from the sign-in slice on): create a Google Sheet, create a service account, share the sheet with its email as **Editor**, and set `SHEETS_SPREADSHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` (see `.env.example`). Tabs are created automatically.
 
+## Sign-in setup (Google Cloud)
+
+1. In Google Cloud Console create a project, then **APIs & Services → OAuth consent screen** (External, status *Testing*; add yourself and invited users as test users) and **Credentials → Create OAuth client ID → Web application**.
+2. Add the authorised redirect URIs `http://localhost:3000/api/auth/callback` and `https://<your-site>/api/auth/callback`.
+3. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `APP_URL` (the origin, no trailing slash) and `AUTH_SECRET` (`openssl rand -base64 48`). Optionally `SIGNUP_ALLOWLIST=you@example.com,friend@example.com`.
+4. Create the data store: enable the **Google Sheets API**, create a service account and a key, create a Google Sheet and share it with the service account's email as **Editor**; set the three `SHEETS_*` / `GOOGLE_SERVICE_ACCOUNT_*` variables.
+
+Flow: `/api/auth/google` (state + nonce + PKCE, signed 10-minute cookie) → Google → `/api/auth/callback` (verifies state, exchanges the code, checks the ID token's signature, issuer, audience, expiry, nonce and verified email, then finds or creates the user) → 24-hour signed `HttpOnly` session cookie. `proxy.ts` guards every route except `/`, `/login`, `/api/health` and `/api/auth/*`; without configuration, production answers 503.
+
 ## Team and workflow
 
 Built with a Claude Code agent team (`/team <idea>`): Product Owner, Senior Architect, QA and Security Auditor, with the repo owner as CTO holding the spec and release gates. See [CLAUDE.md](CLAUDE.md) for rules, OWASP table and Definition of done, and [BRANCHING.md](https://github.com/MusDev99/agentic-coding-style/blob/main/BRANCHING.md) for the git flow.
@@ -51,8 +60,10 @@ Built with a Claude Code agent team (`/team <idea>`): Product Owner, Senior Arch
 ## Project structure
 
 ```
-app/                  Next.js routes (page, layout, api/health)
-lib/                  config checks, tenant-scoped store (`store.ts`), Sheets client (`sheets-client.ts`), schema, cell guard
+app/                  Next.js routes (landing, login, dashboard, api/health, api/auth/*)
+proxy.ts              route guard (session check, fail closed)
+lib/                  config checks, tenant-scoped store + users (`store.ts`), Sheets client, schema, cell guard,
+                      sessions (`auth-core.ts`), Google OIDC (`oidc.ts`, `google.ts`), sign-in decision (`sign-in.ts`)
 tests/                node --test unit tests
 docs/decisions/       architecture decisions + roadmap
 docs/features/        one feature.md per feature (written by the Product Owner agent)

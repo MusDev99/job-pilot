@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-01 (sign-in)
+
+- Week 1 Google sign-in: OAuth code flow with PKCE, state and nonce; ID-token verification (signature, issuer, audience, expiry, nonce, verified email); users tab with find-or-create, deactivation and optional `SIGNUP_ALLOWLIST`; 24-hour signed session cookie; `proxy.ts` route guard that fails closed (503) in production; `/login`, `/dashboard` shell, CSRF-checked sign-out; `APP_URL` is now required. Feature spec in `docs/features/google-sign-in/`.
+
 ## 2026-11-01
 
 - Week 1 data layer: tenant-scoped Google Sheets store (`lib/store.ts`) with per-user isolation, formula-injection guard, strict header check and fail-loud outages; real Sheets client with service-account auth and retry (`lib/sheets-client.ts`); private-key normaliser (`lib/pem.ts`); feature spec in `docs/features/data-layer/`.

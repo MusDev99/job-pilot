@@ -1,0 +1,128 @@
+// Dependency-free session primitives (OWASP A01/A02/A07). Web Crypto only, no relative imports,
+// so it runs unchanged in the proxy, in route handlers and under `node --test`.
+
+export const SESSION_COOKIE = "jp_session";
+export const OAUTH_COOKIE = "jp_oauth"; // state + nonce + PKCE verifier while the person is at Google
+export const SESSION_TTL_SECONDS = 60 * 60 * 24; // 24 hours: sign-in is one click, and a revoked user loses access within a day
+export const OAUTH_TTL_SECONDS = 60 * 10;
+
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+
+export interface SessionUser {
+  /** Row id in the `users` tab; the `userId` every store call is scoped by. */
+  uid: string;
+  email: string;
+}
+
+export function toBase64Url(bytes: Uint8Array): string {
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+export function fromBase64Url(text: string): Uint8Array {
+  const bin = atob(text.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (text.length % 4)) % 4));
+  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
+}
+
+async function hmac(secret: string, data: string): Promise<Uint8Array> {
+  const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(data)));
+}
+
+function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < Math.max(a.length, b.length); i++) diff |= (a[i] ?? 0) ^ (b[i] ?? 0);
+  return diff === 0;
+}
+
+type Kind = "s" | "o";
+
+/** `<base64url(json)>.<hmac>`; the kind is signed too, so an OAuth cookie can never be replayed as a session. */
+async function sign(secret: string, kind: Kind, body: Record<string, unknown>, ttlSeconds: number, nowMs: number): Promise<string> {
+  const exp = Math.floor(nowMs / 1000) + ttlSeconds;
+  const payload = toBase64Url(enc.encode(JSON.stringify({ ...body, typ: kind, exp })));
+  return `${payload}.${toBase64Url(await hmac(secret, `v1:${payload}`))}`;
+}
+
+async function verify(token: string | undefined, secret: string, kind: Kind, nowMs: number): Promise<Record<string, unknown> | null> {
+  if (!token || !secret) return null;
+  const parts = token.split(".");
+  if (parts.length !== 2 || !parts[0] || !parts[1]) return null;
+  try {
+    const expected = toBase64Url(await hmac(secret, `v1:${parts[0]}`));
+    if (!timingSafeEqual(enc.encode(parts[1]), enc.encode(expected))) return null;
+    const body = JSON.parse(dec.decode(fromBase64Url(parts[0]))) as Record<string, unknown>;
+    if (body.typ !== kind || typeof body.exp !== "number" || body.exp * 1000 <= nowMs) return null;
+    return body;
+  } catch {
+    return null;
+  }
+}
+
+export const createSessionToken = (secret: string, user: SessionUser, nowMs = Date.now()) =>
+  sign(secret, "s", { uid: user.uid, email: user.email }, SESSION_TTL_SECONDS, nowMs);
+
+/** The signed-in person, or null for a missing, expired, tampered or wrong-kind token. */
+export async function verifySessionToken(token: string | undefined, secret: string, nowMs = Date.now()): Promise<SessionUser | null> {
+  const body = await verify(token, secret, "s", nowMs);
+  return body && typeof body.uid === "string" && typeof body.email === "string" ? { uid: body.uid, email: body.email } : null;
+}
+
+export interface OAuthState {
+  state: string;
+  nonce: string;
+  verifier: string;
+  next: string;
+}
+
+export const createOAuthCookie = (secret: string, s: OAuthState, nowMs = Date.now()) =>
+  sign(secret, "o", { ...s }, OAUTH_TTL_SECONDS, nowMs);
+
+export async function readOAuthCookie(token: string | undefined, secret: string, nowMs = Date.now()): Promise<OAuthState | null> {
+  const b = await verify(token, secret, "o", nowMs);
+  return b && typeof b.state === "string" && typeof b.nonce === "string" && typeof b.verifier === "string" && typeof b.next === "string"
+    ? { state: b.state, nonce: b.nonce, verifier: b.verifier, next: b.next }
+    : null;
+}
+
+/** Only same-site relative paths are allowed after login (prevents open redirects, A01). */
+export function safeNext(next: string | null | undefined, fallback = "/dashboard"): string {
+  if (!next || !next.startsWith("/") || next.startsWith("//") || next.includes("\\") || /[\r\n]/.test(next)) return fallback;
+  return next;
+}
+
+/** CSRF defence for cookie-authenticated writes: Origin (or Sec-Fetch-Site) must match this site. */
+export function isSameOrigin(request: Request): boolean {
+  const site = request.headers.get("sec-fetch-site");
+  if (site) return site === "same-origin" || site === "none";
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return new URL(origin).host === new URL(request.url).host;
+  } catch {
+    return false;
+  }
+}
+
+/** Best-effort throttle. In-memory, so per serverless instance; add an edge/WAF rule for a hard limit. */
+export function createRateLimiter(max: number, windowMs: number) {
+  const hits = new Map<string, { count: number; resetAt: number }>();
+  return {
+    take(key: string, now = Date.now()): boolean {
+      const cur = hits.get(key);
+      if (!cur || cur.resetAt <= now) {
+        hits.set(key, { count: 1, resetAt: now + windowMs });
+        if (hits.size > 5000) for (const [k, v] of hits) if (v.resetAt <= now) hits.delete(k);
+        return true;
+      }
+      cur.count += 1;
+      return cur.count <= max;
+    },
+  };
+}
+
+export function clientIp(request: Request): string {
+  return (request.headers.get("x-forwarded-for")?.split(",")[0] ?? request.headers.get("x-real-ip") ?? "unknown").trim();
+}

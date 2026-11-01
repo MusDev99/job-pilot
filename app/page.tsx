@@ -10,14 +10,13 @@ export default function Home() {
       <header className="flex flex-col gap-4">
         <h1 className="text-4xl font-semibold tracking-tight">JobPilot</h1>
         <p className="text-lg text-muted">Fewer, better applications: the right jobs, ranked by fit, with a resume ready to tune.</p>
-        {/* Von Restorff: one primary action. Fitts: 44px+ touch target. Enabled with Google sign-in in Week 1. */}
-        <button
-          type="button"
-          disabled
-          className="min-h-11 w-full rounded-card bg-accent px-5 font-medium text-white opacity-60 sm:w-auto sm:self-start"
+        {/* Von Restorff: one primary action. Fitts: 44px+ touch target. Signed-out visitors are sent on to /login. */}
+        <a
+          href="/dashboard"
+          className="flex min-h-11 w-full items-center justify-center rounded-card bg-accent px-5 font-medium text-bg sm:w-auto sm:self-start"
         >
-          Sign in with Google (coming soon)
-        </button>
+          Sign in with Google
+        </a>
       </header>
       {/* Miller / Common Region: three chunks, each in its own card. */}
       <ul className="grid gap-4 sm:grid-cols-3">

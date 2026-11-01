@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { AUTH_KEYS, MIN_SECRET_LENGTH, STORE_KEYS, checkConfig, missingKeys } from "../lib/config.ts";
+import { AUTH_KEYS, MIN_SECRET_LENGTH, STORE_KEYS, checkConfig, missingKeys, normalizeAppUrl, parseAllowlist } from "../lib/config.ts";
 
 const full = Object.fromEntries([...AUTH_KEYS, ...STORE_KEYS].map((key) => [key, "x".repeat(MIN_SECRET_LENGTH)]));
 
@@ -27,4 +27,10 @@ test("config: empty environment fails closed", () => {
   const status = checkConfig({});
   assert.equal(status.ok, false);
   assert.equal(status.ok ? 0 : status.problems.length, AUTH_KEYS.length + STORE_KEYS.length);
+});
+
+test("config: allowlist and app url are normalised", () => {
+  assert.deepEqual(parseAllowlist(" Ada@Example.com, ,bob@x.io "), ["ada@example.com", "bob@x.io"]);
+  assert.deepEqual(parseAllowlist(undefined), []);
+  assert.equal(normalizeAppUrl(" https://app.example/// "), "https://app.example");
 });

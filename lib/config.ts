@@ -3,7 +3,7 @@
 export type Env = Readonly<Record<string, string | undefined>>;
 
 /** Variables without which sign-in must not run. Production fails closed (503) when any is missing. */
-export const AUTH_KEYS = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "AUTH_SECRET"] as const;
+export const AUTH_KEYS = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "AUTH_SECRET", "APP_URL"] as const;
 
 /** Variables the data store needs. */
 export const STORE_KEYS = [
@@ -30,4 +30,14 @@ export function checkConfig(env: Env): ConfigStatus {
     problems.push(`AUTH_SECRET is ${secret.length} characters; needs at least ${MIN_SECRET_LENGTH}`);
   }
   return problems.length === 0 ? { ok: true } : { ok: false, problems };
+}
+
+/** Optional comma-separated list of emails allowed to sign up. Empty means anyone with a Google account. */
+export function parseAllowlist(raw: string | undefined): string[] {
+  return (raw ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+}
+
+/** Public origin without a trailing slash; the OAuth redirect URI is `${appUrl}/api/auth/callback`. */
+export function normalizeAppUrl(raw: string | undefined): string {
+  return (raw ?? "").trim().replace(/\/+$/, "");
 }
