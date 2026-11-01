@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "flyonui";
 
 /* Design tokens: use these (bg-surface, text-muted, ...) instead of raw colours in components. */
 @theme {
@@ -10,6 +11,28 @@
   --color-accent: #4f8cff;
   --color-danger: #ef4444;
   --radius-card: 0.75rem;
+}
+
+/* FlyonUI theme built from our tokens (colour values stay in @theme above). */
+@plugin "flyonui/theme" {
+  name: "jobpilot";
+  default: true;
+  color-scheme: dark;
+  --color-base-100: var(--color-bg);
+  --color-base-200: var(--color-surface);
+  --color-base-300: var(--color-border);
+  --color-base-content: var(--color-text);
+  --color-primary: var(--color-accent);
+  --color-primary-content: var(--color-bg);
+  --color-error: var(--color-danger);
+  --color-error-content: var(--color-text);
+  --radius-box: 0.75rem;
+  --radius-field: 0.5rem;
+}
+
+/* Soft brand glow behind hero and login (decorative, no layout cost). */
+.glow {
+  background-image: radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--color-accent) 28%, transparent), transparent 70%);
 }
 
 html {

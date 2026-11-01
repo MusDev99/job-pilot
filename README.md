@@ -20,7 +20,7 @@ Full decisions, trade-offs and roadmap: [docs/decisions/0001-stack-and-scope.md]
 
 ## Stack
 
-Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind 4 · Google Sheets API (data store) · Gmail API · Radix / Base UI primitives · Netlify. (Claude API arrives in v1.1.)
+Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind 4 + FlyonUI · Google Sheets API (data store) · Gmail API · Radix / Base UI primitives · Netlify. (Claude API arrives in v1.1.)
 
 ## Develop
 
@@ -62,6 +62,7 @@ Built with a Claude Code agent team (`/team <idea>`): Product Owner, Senior Arch
 
 ```
 app/                  Next.js routes (landing, login, dashboard, api/health, api/auth/*)
+components/           Shared UI pieces (icons, Google mark); FlyonUI theme lives in app/globals.css
 proxy.ts              route guard (session check, fail closed)
 lib/                  config checks, tenant-scoped store + users (`store.ts`), Sheets client, schema, cell guard,
                       sessions (`auth-core.ts`), Google OIDC (`oidc.ts`, `google.ts`), sign-in decision (`sign-in.ts`)
