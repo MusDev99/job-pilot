@@ -27,6 +27,7 @@ Four Claude Code subagents in `.claude/agents/`, run by `/team` (`.claude/comman
 
 - Pure logic lives in `lib/*.ts` with tests in `tests/`; pass time and environment in, never read the clock or `process.env` inside pure code (see `lib/config.ts`).
 - **Data store (from Week 1)**: one spreadsheet, one tab per entity, row 1 = header, column order defined once in `lib/schema.ts`. **All access goes through `lib/store.ts`**, and every function takes the signed-in `userId` and filters by it. Never call the Sheets API elsewhere. Batch reads/writes. Text written to a cell goes through a formula-injection guard.
+- **Users and sessions**: the `users` tab is only touched by `store.users.signIn` (find by Google `sub`, else by email; a different `sub` on a known email is refused; inactive users are refused; optional `SIGNUP_ALLOWLIST` gates new accounts only). Session cookie `jp_session` = HMAC-signed `{uid,email,exp}` (24h); `uid` is the `userId` for every store call. Pure logic: `lib/auth-core.ts`, `lib/oidc.ts`, `lib/sign-in.ts`; wiring only in `lib/server.ts`.
 - **Tenant isolation**: a route, server action or scheduled job must never return or change another user's rows. Every server action starts with `await requireSession()`.
 - **Gmail (from Week 2)**: scope `gmail.readonly` only, queries limited to job alert senders/labels. Store parsed job fields, never raw email bodies. Users can disconnect Gmail and delete all their data.
 - **Resume**: parsed in memory on upload; only the structured profile is stored. No original file is kept.

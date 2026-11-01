@@ -3,8 +3,8 @@
 // Pure: the spreadsheet client, clock and id generator are injected.
 import { guardCell, unguardCell } from "./cells.ts";
 import type { Cell, Row } from "./cells.ts";
-import { TENANT_TABLES } from "./schema.ts";
-import type { TenantTable } from "./schema.ts";
+import { TABLES, TENANT_TABLES } from "./schema.ts";
+import type { TableName, TenantTable } from "./schema.ts";
 import type { SheetsApi } from "./sheets-api.ts";
 
 const USER_ID = /^[A-Za-z0-9_-]{1,64}$/;
@@ -34,21 +34,21 @@ export function createStore(deps: StoreDeps) {
   const { api } = deps;
   const newId = deps.newId ?? (() => crypto.randomUUID());
   const now = deps.now ?? (() => new Date());
-  const ensuring = new Map<TenantTable, Promise<void>>();
+  const ensuring = new Map<TableName, Promise<void>>();
 
   // One creation attempt per tab at a time; a failure is retried on the next call.
-  function prepare(table: TenantTable): Promise<void> {
+  function prepare(table: TableName): Promise<void> {
     let pending = ensuring.get(table);
     if (!pending) {
-      pending = api.ensureTab(table, TENANT_TABLES[table]);
+      pending = api.ensureTab(table, TABLES[table]);
       ensuring.set(table, pending);
       pending.catch(() => ensuring.delete(table));
     }
     return pending;
   }
 
-  async function load(table: TenantTable): Promise<{ n: number; row: Row }[]> {
-    const columns: readonly string[] = TENANT_TABLES[table];
+  async function load(table: TableName): Promise<{ n: number; row: Row }[]> {
+    const columns = TABLES[table];
     await prepare(table);
     const [header = [], ...body] = await api.getValues(table);
     if (!columns.every((name, i) => header[i] === name)) {
@@ -67,8 +67,7 @@ export function createStore(deps: StoreDeps) {
     return entries;
   }
 
-  const toCells = (table: TenantTable, row: Row): Cell[] =>
-    TENANT_TABLES[table].map((name) => guardCell(row[name] ?? null));
+  const toCells = (table: TableName, row: Row): Cell[] => TABLES[table].map((name) => guardCell(row[name] ?? null));
 
   function checkFields(table: TenantTable, fields: Row) {
     const columns: readonly string[] = TENANT_TABLES[table];
@@ -132,7 +131,55 @@ export function createStore(deps: StoreDeps) {
     };
   }
 
-  return { forUser };
+  // Accounts. Not tenant-scoped (a user row is the tenant), so only the sign-in flow may use this.
+  const users = {
+    async signIn(profile: GoogleProfile, options: { allowedEmails?: readonly string[] } = {}): Promise<SignInResult> {
+      const email = profile.email.trim().toLowerCase();
+      const entries = await load("users");
+      const existing =
+        entries.find((e) => e.row.googleSub === profile.sub) ?? entries.find((e) => String(e.row.email ?? "").toLowerCase() === email);
+      const stamp = now().toISOString();
+
+      if (existing) {
+        // The same email under a different Google account id is not the same person (reassigned address).
+        if (existing.row.googleSub && existing.row.googleSub !== profile.sub) return { ok: false, reason: "account_mismatch" };
+        if (existing.row.active !== true && existing.row.active !== "TRUE") return { ok: false, reason: "inactive" };
+        const row: Row = {
+          ...existing.row,
+          email,
+          googleSub: profile.sub,
+          name: profile.name ?? existing.row.name ?? null,
+          picture: profile.picture ?? existing.row.picture ?? null,
+          lastLoginAt: stamp,
+        };
+        await api.updateRow("users", existing.n, toCells("users", row));
+        return { ok: true, user: { id: String(row.id), email }, created: false };
+      }
+
+      if (options.allowedEmails && options.allowedEmails.length > 0 && !options.allowedEmails.includes(email)) {
+        return { ok: false, reason: "not_allowed" };
+      }
+      const row: Row = {
+        id: newId(), email, googleSub: profile.sub, name: profile.name ?? null, picture: profile.picture ?? null,
+        active: true, createdAt: stamp, lastLoginAt: stamp,
+      };
+      await api.appendRow("users", toCells("users", row));
+      return { ok: true, user: { id: String(row.id), email }, created: true };
+    },
+  };
+
+  return { forUser, users };
 }
+
+export interface GoogleProfile {
+  sub: string;
+  email: string;
+  name?: string;
+  picture?: string;
+}
+
+export type SignInResult =
+  | { ok: true; user: { id: string; email: string }; created: boolean }
+  | { ok: false; reason: "not_allowed" | "inactive" | "account_mismatch" };
 
 export type Store = ReturnType<typeof createStore>;
