@@ -1,6 +1,6 @@
 # 🧭 JobPilot
 
-Job agent portal: your job alert emails, turned into one ranked list, scored against your ATS resume, with a resume you can tailor per job.
+Job agent portal: your job alert emails, turned into one ranked list, scored against your ATS resume, with a resume you can tailor per job (tailoring arrives in v1.1).
 
 > Status: **Week 1**. Data layer and Google sign-in are in; the signed-in dashboard is an empty shell until Gmail arrives in Week 2. Features arrive weekly (see the roadmap).
 
@@ -10,16 +10,17 @@ Job agent portal: your job alert emails, turned into one ranked list, scored aga
 |---|---|---|
 | 🔐 | Google sign-in, multi-user, each user sees only their own data | 1 |
 | 📬 | Reads job alert emails (LinkedIn, JobStreet, Indeed, ...) from your Gmail | 2 |
-| 🧾 | Extracts job details: skills, salary, seniority, location | 3 |
+| 🧾 | Extracts job details (skills, salary, seniority, location) with plain rules, no AI | 3 |
 | 🎯 | Upload your ATS resume, get a 0 to 100 match score per job with matched and missing skills | 4 |
 | 📧 | Daily digest email of your best matches | 4 |
-| ✍️ | Tailored resume suggestions you approve, exported to DOCX/PDF | 5 |
+| 🔒 | Security audit, end-to-end tests, v1.0.0 release | 5 |
+| ✍️ | AI job-detail extraction and tailored resume suggestions you approve, exported to DOCX/PDF | v1.1 |
 
 Full decisions, trade-offs and roadmap: [docs/decisions/0001-stack-and-scope.md](docs/decisions/0001-stack-and-scope.md).
 
 ## Stack
 
-Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind 4 · Google Sheets API (data store) · Gmail API · Claude API · Netlify.
+Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind 4 · Google Sheets API (data store) · Gmail API · Radix / Base UI primitives · Netlify. (Claude API arrives in v1.1.)
 
 ## Develop
 
