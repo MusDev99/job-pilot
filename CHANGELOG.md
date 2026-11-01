@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-01 (landing and login redesign)
+
+- Redesigned the landing page (hero, how it works, privacy note) and the sign-in page (centred card, inline error) with FlyonUI 2.4.1 themed from our tokens (`@plugin "flyonui/theme"` in `globals.css`). No horizontal scroll at 375px.
+- New shared `components/icons.tsx` (inline icons) and `components/google-icon.tsx`.
+
 ## 2026-11-01 (roadmap and UI rule)
 
 - Decision: no AI in v1.0.0. Job details become rule-based (Week 3), Week 5 is harden + release, AI extraction and tailoring move to v1.1. `ANTHROPIC_API_KEY` is not used until then.
