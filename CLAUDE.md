@@ -37,8 +37,8 @@ Four Claude Code subagents in `.claude/agents/`, run by `/team` (`.claude/comman
 ## UI libraries
 
 - **Behaviour and accessibility** come from headless primitives: **Radix** (`radix-ui`) by default; **Base UI** (`@base-ui/react`) when Radix lacks a component or falls behind; React Aria or Headless UI are also acceptable. Never hand-roll dialogs, menus, popovers, comboboxes or tabs.
-- **Look**: styled components are copied into `components/ui/*` (shadcn-style) and owned by us, built from tokens only. Pages and features import from `components/ui/*`, never from a vendor primitive directly, so a library can be swapped in one place.
-- **Styling is Tailwind CSS** (free, v4, tokens in `@theme`). Tailwind UI is now Tailwind Plus (paid, licensed): CTO decision 2026-11-01 is to use Tailwind CSS only, so do not copy Plus blocks into this public repo; build layouts from primitives and tokens.
+- **Look**: **FlyonUI** (MIT, Tailwind plugin with semantic classes) is the component look layer, themed from our tokens (CTO decision 2026-11-01). Its last release (2.4.1) was 2025-09-26, so the 6-month release rule below is waived for FlyonUI only; re-check at each release and replace it if it is abandoned. Do not use FlyonUI's JS for dialogs, menus, popovers or tabs: Radix handles behaviour. Wrap components in `components/ui/*` (owned by us); pages import from there, never from a vendor primitive directly, so a library can be swapped in one place.
+- **Styling is Tailwind CSS** (free, v4, tokens in `@theme`). Tailwind UI is now Tailwind Plus (paid, licensed): do not copy Plus blocks into this public repo.
 - **A new or emerging UI library** needs a design note from the Senior Architect and a Security check (OWASP A06/A08) before it is added: headless and accessible, works with React 19 and Tailwind 4, had a release in the last 6 months, exact version, lockfile committed, `npm audit` clean, nothing loaded from a CDN. Prefer one primitive library per component type.
 - Client components only where interaction needs them (`"use client"`); keep the Laws of UX, 44px touch targets and reduced-motion rules below.
 

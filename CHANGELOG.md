@@ -3,7 +3,7 @@
 ## 2026-11-01 (roadmap and UI rule)
 
 - Decision: no AI in v1.0.0. Job details become rule-based (Week 3), Week 5 is harden + release, AI extraction and tailoring move to v1.1. `ANTHROPIC_API_KEY` is not used until then.
-- New UI library rule: Radix by default, Base UI as second source, shadcn-style `components/ui/*`, Tailwind CSS only for styling (no Tailwind Plus blocks in the public repo), checks for any new library.
+- New UI library rule: Radix by default, Base UI as second source, shadcn-style `components/ui/*`, FlyonUI as the look layer with Radix for behaviour (stale-release waiver noted), no Tailwind Plus blocks in the public repo, checks for any new library.
 
 ## 2026-11-01 (sign-in)
 

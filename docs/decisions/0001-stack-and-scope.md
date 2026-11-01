@@ -42,4 +42,4 @@ Later: job portal scraping (only where terms and robots.txt allow), more sources
 
 ## UI libraries (decided 2026-11-01)
 
-Headless primitives from **Radix** (`radix-ui`) by default, **Base UI** (`@base-ui/react`) when Radix lacks a component; styled components are copied into `components/ui/*` shadcn-style and owned by us. Styling is **Tailwind CSS** only (CTO, 2026-11-01); Tailwind UI is now Tailwind Plus (paid, licensed), so none of its blocks are committed to this public repo. Any other emerging library goes through the checks in `CLAUDE.md`.
+Headless primitives from **Radix** (`radix-ui`) by default, **Base UI** (`@base-ui/react`) when Radix lacks a component; styled components are copied into `components/ui/*` shadcn-style and owned by us. Look layer is **FlyonUI** (MIT, Tailwind plugin; CTO, 2026-11-01) with Radix for behaviour. FlyonUI's last release is 2025-09-26, so the 6-month release rule is waived for it and re-checked at each release. Tailwind UI is now Tailwind Plus (paid, licensed), so none of its blocks are committed to this public repo.
