@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-JobPilot: multi-user SaaS job agent portal. Reads job alert emails from each user's Gmail, extracts job details (skills, salary, seniority), and scores each job against the user's ATS resume. AI extraction and resume tailoring are deferred to v1.1. Next.js 16 (App Router) + React 19 + Tailwind 4 + strict TypeScript, Google Sheets as the data store, deployed on Netlify. Decisions and roadmap: [docs/decisions/0001-stack-and-scope.md](docs/decisions/0001-stack-and-scope.md). Process: [Agentic Coding Style](https://musdev99.github.io/agentic-coding-style) and [BRANCHING.md](https://github.com/MusDev99/agentic-coding-style/blob/main/BRANCHING.md).
+JobPilot: multi-user SaaS job agent portal. Reads job alert emails from each user's Gmail, extracts job details (skills, salary, seniority), and scores each job against the user's ATS resume. AI extraction and resume tailoring are deferred to v1.1. Next.js 16 (App Router) + React 19 + Tailwind 4 + strict TypeScript, Google Sheets as the data store, deployed on Vercel (for now). Decisions and roadmap: [docs/decisions/0001-stack-and-scope.md](docs/decisions/0001-stack-and-scope.md). Process: [Agentic Coding Style](https://musdev99.github.io/agentic-coding-style) and [BRANCHING.md](https://github.com/MusDev99/agentic-coding-style/blob/main/BRANCHING.md).
 
 ## Commands
 
@@ -48,7 +48,7 @@ Four Claude Code subagents in `.claude/agents/`, run by `/team` (`.claude/comman
 - Design tokens only (`@theme` in `app/globals.css`); no raw hex in components.
 - Mobile-first: 375px, no horizontal scroll, touch targets ≥ 44px, respect `prefers-reduced-motion`. Apply the [Laws of UX](https://lawsofux.com/) and name the law in the PR and in a short code comment where it drives a decision.
 - Empty, loading and error states are required. User-facing errors are generic; details go to `console.error` only.
-- Secrets only in env (Netlify environment variables); never commit `.env*`, `credentials/` or `keys/`. Document new variables in `.env.example`. Error messages name variables, never their values.
+- Secrets only in env (Vercel environment variables); never commit `.env*`, `credentials/` or `keys/`. Document new variables in `.env.example`. Error messages name variables, never their values.
 - Exact dependency versions; commit `package-lock.json`.
 
 ## Security: OWASP Top 10 (2021), mandatory

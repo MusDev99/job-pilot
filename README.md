@@ -33,11 +33,13 @@ npm run verify               # typecheck + tests + build (same as CI)
 
 `GET /api/health` returns `200 {"status":"ok"}` when configuration is complete and `503 {"status":"unconfigured"}` otherwise (fail closed).
 
-## Deploy (Netlify)
+## Deploy (Vercel)
 
-1. Import the repo in Netlify; it detects Next.js (`netlify.toml` sets the build command and Node 22).
-2. Add the variables from `.env.example` under Site configuration > Environment variables.
+1. Import the repo in Vercel; it detects Next.js and uses `npm run build`. Set the Node.js version to 22.x under Project Settings > General.
+2. Add the variables from `.env.example` under Project Settings > Environment Variables.
 3. Check `https://<site>/api/health` returns `ok`.
+
+`netlify.toml` is kept for now and unused by Vercel; remove it once Netlify is retired.
 
 ## Data layer
 
