@@ -4,6 +4,23 @@
 
 - Sync now also searches alert senders and recognises job links from Hiredly, Maukerja, Jora, Kalibrr, Monster, ZipRecruiter, We Work Remotely, Remote OK, Michael Page and Hays, on top of LinkedIn, Indeed, JobStreet, Jobsdb, Seek, Glassdoor and Wellfound. Still limited to these sender domains (CLAUDE.md Gmail rule). The new link shapes are best guesses until real alert samples arrive.
 
+## 2026-11-05 (dashboard header)
+
+- New floating header with an interactive account menu (Radix `DropdownMenu` via `components/ui/dropdown-menu.tsx`: keyboard, focus and Escape handled) showing the Google profile image, name and email, with Sync Gmail and Sign out. Adds `radix-ui` 1.8.1 (exact, lockfile committed, `npm audit` clean).
+- The session cookie now also carries the Google name and profile image URL; the URL is only accepted if it is https on `lh3.googleusercontent.com` (already in the CSP). Existing sessions show an initial until the next sign-in.
+- Sync Gmail button shows "Opening Google…" while the redirect happens.
+
+## 2026-11-05 (dashboard redesign)
+
+- Redesigned the dashboard with FlyonUI: sticky navbar with avatar and sign-out, hero with the one filled Sync button, stat cards with icons, search plus salary switch and source chips, two-column job cards (company tile, New badge, salary highlight, skills, Open posting), a three-step first-run state, and a skeleton shaped like the page.
+- New wrappers `components/ui/alert.tsx` and `stat-card.tsx`; new `components/dashboard/*`; `Button` gains `ghost` and `danger`; soft buttons use light text for contrast.
+
+## 2026-11-05 (dashboard complete)
+
+- Dashboard: summary cards (jobs, last 7 days, salary stated), search plus source and "salary stated" filters (plain GET form, shareable URL), "received" dates, a "no jobs match" state, and a loading skeleton.
+- "Delete my data": `POST /api/account/delete` (same-site, signed-in, must type DELETE) removes the user's rows in every tenant tab and signs them out. The `users` row (email, name) stays; removing it needs a store change and is a follow-up.
+
+
 ## 2026-11-05 (alert parser fix)
 
 - Fix: `&middot;`, `&bull;`, dashes, quotes and hex entities in alert emails are decoded, and a tag cut by the 1500-character slice no longer leaks its attributes into company or location. Jobs already saved keep their old text (sync de-duplicates by link): use Delete my data and sync again to refresh them.

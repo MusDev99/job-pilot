@@ -3,13 +3,15 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 // The one place pages get buttons from, so the look library (FlyonUI) can be swapped here.
 // Fitts: every size keeps a touch target of 44px or more. Von Restorff: use `primary` once per view.
-type Variant = "primary" | "soft" | "outline";
+type Variant = "primary" | "soft" | "outline" | "ghost" | "danger";
 type Size = "md" | "lg";
 
 const VARIANT: Record<Variant, string> = {
   primary: "btn-primary",
-  soft: "btn-soft btn-primary",
+  soft: "btn-soft btn-primary text-text",
   outline: "btn-outline border-border text-text",
+  ghost: "btn-text text-muted hover:text-text",
+  danger: "btn-outline btn-error",
 };
 const SIZE: Record<Size, string> = { md: "min-h-11", lg: "btn-lg min-h-12" };
 
