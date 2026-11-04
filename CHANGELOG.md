@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-04 (jobs parser)
+
+- MVP scope cut: v1.0.0 = sign-in, Gmail alert parsing, Sheets, job list. Resume score, digest and AI move to v1.1.
+- New `jobs` tab in the schema; rule-based `lib/job-extract.ts` (skills, salary, seniority) and `lib/alert-parse.ts` (alert email to job candidates), with tests. Spec: `docs/features/gmail-sync/feature.md`.
+
 ## 2026-11-04 (UI scaffold and page states)
 
 - New `components/ui/button.tsx` (`Button`, `ButtonLink`, `ButtonAnchor`): pages no longer use FlyonUI button classes directly, so the look library can be swapped in one place.
