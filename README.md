@@ -33,11 +33,13 @@ npm run verify               # typecheck + tests + build (same as CI)
 
 `GET /api/health` returns `200 {"status":"ok"}` when configuration is complete and `503 {"status":"unconfigured"}` otherwise (fail closed).
 
-## Deploy (Netlify)
+## Deploy (Vercel)
 
-1. Import the repo in Netlify; it detects Next.js (`netlify.toml` sets the build command and Node 22).
-2. Add the variables from `.env.example` under Site configuration > Environment variables.
+1. Import the repo in Vercel; it detects Next.js and uses `npm run build`. Set the Node.js version to 22.x under Project Settings > General.
+2. Add the variables from `.env.example` under Project Settings > Environment Variables.
 3. Check `https://<site>/api/health` returns `ok`.
+
+`netlify.toml` is kept for now and unused by Vercel; remove it once Netlify is retired.
 
 ## Data layer
 
@@ -48,7 +50,7 @@ To prepare the sheet (needed from the sign-in slice on): create a Google Sheet, 
 ## Sign-in setup (Google Cloud)
 
 1. In Google Cloud Console create a project, then **APIs & Services → OAuth consent screen** (External, status *Testing*; add yourself and invited users as test users) and **Credentials → Create OAuth client ID → Web application**.
-2. Add the authorised redirect URIs `http://localhost:3000/api/auth/callback` and `https://<your-site>/api/auth/callback`.
+2. Add the authorised redirect URIs (four): `http://localhost:3000/api/auth/callback`, `https://<your-site>/api/auth/callback`, `http://localhost:3000/api/gmail/callback` and `https://<your-site>/api/gmail/callback`. Also enable the **Gmail API** (the Sync button asks for read-only access each time and stores no token).
 3. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `APP_URL` (the origin, no trailing slash) and `AUTH_SECRET` (`openssl rand -base64 48`). Optionally `SIGNUP_ALLOWLIST=you@example.com,friend@example.com`.
 4. Create the data store: enable the **Google Sheets API**, create a service account and a key, create a Google Sheet and share it with the service account's email as **Editor**; set the three `SHEETS_*` / `GOOGLE_SERVICE_ACCOUNT_*` variables.
 

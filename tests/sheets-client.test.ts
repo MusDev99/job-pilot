@@ -46,6 +46,15 @@ test("sheets client: appends with RAW input so nothing is reinterpreted", async 
   assert.deepEqual(JSON.parse(call?.body ?? ""), { values: [["a", "'=x"]] });
 });
 
+test("sheets client: appendRows sends many rows in one request, none when empty", async () => {
+  const f = fakeFetch([Response.json({})]);
+  const client = createSheetsClient(config, { fetch: f.fn, now: () => 0 });
+  await client.appendRows("jobs", []);
+  assert.equal(f.api.length, 0);
+  await client.appendRows("jobs", [["a"], ["b"]]);
+  assert.deepEqual(JSON.parse(f.api[0]?.body ?? ""), { values: [["a"], ["b"]] });
+});
+
 test("sheets client: deletes the highest row first in one batch", async () => {
   const meta = Response.json({ sheets: [{ properties: { sheetId: 7, title: "search_profiles" } }] });
   const f = fakeFetch([meta, Response.json({})]);

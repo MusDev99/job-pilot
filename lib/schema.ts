@@ -5,6 +5,11 @@ export const USER_COLUMNS = [
 ] as const;
 
 export const TENANT_TABLES = {
+  // One row per job found in an alert email. `skills` is comma-separated; empty cells mean "not stated".
+  jobs: [
+    "id", "userId", "messageId", "source", "title", "company", "location", "url", "skills", "salary", "seniority",
+    "receivedAt", "createdAt", "updatedAt",
+  ],
   search_profiles: [
     "id", "userId", "name", "keywords", "location", "remoteOnly", "minSalary", "active", "createdAt", "updatedAt",
   ],

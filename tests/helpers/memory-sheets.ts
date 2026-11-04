@@ -25,6 +25,10 @@ export function createMemorySheets() {
       guard();
       tab(name).push([...row]);
     },
+    async appendRows(name, rows) {
+      guard();
+      for (const row of rows) tab(name).push([...row]);
+    },
     async updateRow(name, rowNumber, row) {
       guard();
       tab(name)[rowNumber - 1] = [...row];

@@ -22,6 +22,8 @@ export interface TenantStore {
   get(table: TenantTable, id: string): Promise<Row | null>;
   /** `id`, `userId`, `createdAt` and `updatedAt` are generated; passing them throws. */
   insert(table: TenantTable, fields: Row): Promise<Row>;
+  /** Like `insert` for many rows with a single spreadsheet write. Returns the stored rows. */
+  insertMany(table: TenantTable, rows: Row[]): Promise<Row[]>;
   /** Null when the row does not exist or belongs to someone else. */
   update(table: TenantTable, id: string, patch: Row): Promise<Row | null>;
   /** False when the row does not exist or belongs to someone else. */
@@ -102,6 +104,21 @@ export function createStore(deps: StoreDeps) {
         if ("updatedAt" in row) row.updatedAt = stamp;
         await api.appendRow(table, toCells(table, row));
         return row;
+      },
+      async insertMany(table, rows) {
+        rows.forEach((fields) => checkFields(table, fields));
+        await load(table); // also verifies the header before we append
+        const stamp = now().toISOString();
+        const stored = rows.map((fields) => {
+          const row: Row = { ...Object.fromEntries(TENANT_TABLES[table].map((c) => [c, null])), ...fields };
+          row.id = newId();
+          row.userId = userId;
+          if ("createdAt" in row) row.createdAt = stamp;
+          if ("updatedAt" in row) row.updatedAt = stamp;
+          return row;
+        });
+        await api.appendRows(table, stored.map((row) => toCells(table, row)));
+        return stored;
       },
       async update(table, id, patch) {
         checkFields(table, patch);
