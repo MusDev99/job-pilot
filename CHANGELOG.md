@@ -16,6 +16,7 @@
 - Dashboard: summary cards (jobs, last 7 days, salary stated), search plus source and "salary stated" filters (plain GET form, shareable URL), "received" dates, a "no jobs match" state, and a loading skeleton.
 - "Delete my data": `POST /api/account/delete` (same-site, signed-in, must type DELETE) removes the user's rows in every tenant tab and signs them out. The `users` row (email, name) stays; removing it needs a store change and is a follow-up.
 
+
 ## 2026-11-05 (alert parser fix)
 
 - Fix: `&middot;`, `&bull;`, dashes, quotes and hex entities in alert emails are decoded, and a tag cut by the 1500-character slice no longer leaks its attributes into company or location. Jobs already saved keep their old text (sync de-duplicates by link): use Delete my data and sync again to refresh them.
