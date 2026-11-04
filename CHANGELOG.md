@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-04 (animated landing)
+
+- Landing page redesigned: split hero ("All your job alerts. One clean list."), four feature cards, one Google button, and an animated app preview (rows rise in, sync ring draws, badges float). CSS only, transform/opacity, switched off under reduced motion. Copy now matches what v1.0.0 does (no match score or tailoring claims). New `--color-success` token, `components/landing-preview.tsx`.
 ## 2026-11-04 (dashboard job list)
 
 - Dashboard shows the user's jobs (newest first, up to 100): title link (opens in a new tab, `noopener noreferrer`), company, location, source, seniority, salary, skills. **Sync Gmail** is the one primary button; a banner reports the sync outcome. Empty and error states. `lib/job-view.ts` (tested) shapes rows and allows http(s) links only.
