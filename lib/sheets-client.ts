@@ -97,6 +97,13 @@ export function createSheetsClient(config: SheetsClientConfig, deps: SheetsClien
         body: { values: [row] },
       });
     },
+    async appendRows(tab, rows) {
+      if (rows.length === 0) return;
+      await request(`/values/${range(tab)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
+        method: "POST",
+        body: { values: rows },
+      });
+    },
     async updateRow(tab, rowNumber, row) {
       await request(`/values/${range(tab, `A${rowNumber}`)}?valueInputOption=RAW`, { method: "PUT", body: { values: [row] } });
     },
