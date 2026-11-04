@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-05 (more Gmail job sources)
+
+- Sync now also searches alert senders and recognises job links from Hiredly, Maukerja, Jora, Kalibrr, Monster, ZipRecruiter, We Work Remotely, Remote OK, Michael Page and Hays, on top of LinkedIn, Indeed, JobStreet, Jobsdb, Seek, Glassdoor and Wellfound. Still limited to these sender domains (CLAUDE.md Gmail rule). The new link shapes are best guesses until real alert samples arrive.
+
 ## 2026-11-05 (alert parser fix)
 
 - Fix: `&middot;`, `&bull;`, dashes, quotes and hex entities in alert emails are decoded, and a tag cut by the 1500-character slice no longer leaks its attributes into company or location. Jobs already saved keep their old text (sync de-duplicates by link): use Delete my data and sync again to refresh them.

@@ -15,7 +15,8 @@ test("auth url: read-only scope, PKCE, state, login hint", () => {
 });
 
 test("query is limited to job-board senders", () => {
-  assert.match(alertQuery(30), /^from:\(linkedin\.com OR indeed\.com .* wellfound\.com\) newer_than:30d$/);
+  assert.match(alertQuery(30), /^from:\(linkedin\.com OR indeed\.com .*\) newer_than:30d$/);
+  assert.doesNotMatch(alertQuery(30), /subject:|label:|in:|gmail\.com/); // sender-limited only: no subject or mailbox-wide terms
 });
 
 test("decodeMessage: nested parts, headers, date", () => {

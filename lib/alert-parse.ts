@@ -33,6 +33,11 @@ interface Board {
   canonical(url: URL): string | null;
 }
 
+/** A board whose job links are recognised by host and path. The canonical link is host + path, with no query or tracking. */
+function pathBoard(source: string, host: RegExp, path: RegExp): Board {
+  return { source, host, canonical: (u) => (path.test(u.pathname) ? `https://${u.hostname}${u.pathname}` : null) };
+}
+
 const BOARDS: Board[] = [
   {
     source: "LinkedIn", host: /(^|\.)linkedin\.com$/,
@@ -73,6 +78,17 @@ const BOARDS: Board[] = [
     source: "Wellfound", host: /(^|\.)wellfound\.com$/,
     canonical: (u) => (/\/jobs\/\d+/.test(u.pathname) ? `https://wellfound.com${u.pathname}` : null),
   },
+  // Newer sources: the link shapes below are best guesses from public job URLs and are tightened from real alert samples.
+  pathBoard("Hiredly", /(^|\.)hiredly\.com$/, /^\/jobs\/[\w-]{4,}/),
+  pathBoard("Maukerja", /(^|\.)maukerja\.(my|com)$/, /^\/(jobs?|job-detail)\/[\w-]{4,}/),
+  pathBoard("Jora", /(^|\.)jora\.com$/, /^\/job\/[\w-]{6,}/),
+  pathBoard("Kalibrr", /(^|\.)kalibrr\.com$/, /^\/c\/[\w-]+\/jobs\/\d+/),
+  pathBoard("Monster", /(^|\.)monster\.[a-z.]{2,6}$/, /^\/job-openings\/[\w-]{6,}/),
+  pathBoard("ZipRecruiter", /(^|\.)ziprecruiter\.com$/, /^\/(c\/[^/]+\/job\/|k\/l\/|jobs\/)[\w-]{4,}/i),
+  pathBoard("We Work Remotely", /(^|\.)weworkremotely\.com$/, /^\/remote-jobs\/[\w-]{4,}/),
+  pathBoard("Remote OK", /(^|\.)remoteok\.com$/, /^\/(remote-jobs\/[\w-]{4,}|l\/\d+)/),
+  pathBoard("Michael Page", /(^|\.)michaelpage\.[a-z.]{2,8}$/, /^\/job-detail\/[\w-]{4,}/),
+  pathBoard("Hays", /(^|\.)hays\.[a-z.]{2,8}$/, /^\/job-detail\/[\w-]{4,}/),
 ];
 
 const NAMED: Record<string, string> = {
