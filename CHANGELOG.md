@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-04 (dashboard job list)
+
+- Dashboard shows the user's jobs (newest first, up to 100): title link (opens in a new tab, `noopener noreferrer`), company, location, source, seniority, salary, skills. **Sync Gmail** is the one primary button; a banner reports the sync outcome. Empty and error states. `lib/job-view.ts` (tested) shapes rows and allows http(s) links only.
+
 ## 2026-11-04 (Gmail sync)
 
 - Sync Gmail backend: `/api/gmail/start` and `/api/gmail/callback` ask Google for read-only Gmail access for one sync (PKCE, state, mailbox must match the signed-in user), read up to 50 job-board alert emails from the last 30 days, store only parsed jobs, keep no token. `lib/gmail.ts`, `lib/sync.ts`, `store.insertMany` + `SheetsApi.appendRows` (one write for many rows).

@@ -9,7 +9,7 @@ type Size = "md" | "lg";
 const VARIANT: Record<Variant, string> = {
   primary: "btn-primary",
   soft: "btn-soft btn-primary",
-  outline: "btn-outline",
+  outline: "btn-outline border-border text-text",
 };
 const SIZE: Record<Size, string> = { md: "min-h-11", lg: "btn-lg min-h-12" };
 
