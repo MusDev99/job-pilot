@@ -13,6 +13,9 @@
 
 - MVP scope cut: v1.0.0 = sign-in, Gmail alert parsing, Sheets, job list. Resume score, digest and AI move to v1.1.
 - New `jobs` tab in the schema; rule-based `lib/job-extract.ts` (skills, salary, seniority) and `lib/alert-parse.ts` (alert email to job candidates), with tests. Spec: `docs/features/gmail-sync/feature.md`.
+## 2026-11-04 (hosting: Vercel for now)
+
+- Docs only: deployment moves from Netlify to Vercel. README deploy steps, `.env.example`, CLAUDE.md and decision record 0001 (with an update note) now name Vercel; the inbox sync is planned on Vercel Cron. `netlify.toml` is kept until Netlify is retired.
 
 ## 2026-11-04 (UI scaffold and page states)
 
