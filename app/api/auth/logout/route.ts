@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   if (!isSameOrigin(request)) return new NextResponse("Forbidden", { status: 403 });
   const { appUrl } = authSettings();
-  const response = NextResponse.redirect(new URL("/login", appUrl || request.url), 303);
+  const response = NextResponse.redirect(new URL("/", appUrl || request.url), 303);
   response.cookies.delete({ name: SESSION_COOKIE, path: "/" });
   response.headers.set("Cache-Control", "no-store");
   return response;
