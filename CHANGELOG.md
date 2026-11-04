@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-04 (remove /login page)
+
+- Removed the separate `/login` page: the landing page's buttons start Google sign-in directly and show sign-in errors (`/?error=`). Signed-out visitors, failed sign-ins and sign-out now go to `/`; `?next=` is still passed through `safeNext()`.
+
 ## 2026-11-04 (animated landing)
 
 - Landing page redesigned: split hero ("All your job alerts. One clean list."), four feature cards, one Google button, and an animated app preview (rows rise in, sync ring draws, badges float). CSS only, transform/opacity, switched off under reduced motion. Copy now matches what v1.0.0 does (no match score or tailoring claims). New `--color-success` token, `components/landing-preview.tsx`.

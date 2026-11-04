@@ -38,12 +38,12 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     // The data store was unreachable: say "unavailable", never "not registered" (OWASP A04).
     console.error("sign-in: data store unavailable:", error instanceof Error ? error.message : "unknown error");
-    return redirectTo(settings.appUrl, "/login?error=unavailable");
+    return redirectTo(settings.appUrl, "/?error=unavailable");
   }
 
   if (!outcome.ok) {
     console.error("sign-in refused:", outcome.reason);
-    return redirectTo(settings.appUrl, "/login?error=1");
+    return redirectTo(settings.appUrl, "/?error=1");
   }
   const response = redirectTo(settings.appUrl, outcome.next);
   response.cookies.set(SESSION_COOKIE, await createSessionToken(settings.secret, outcome.user), {

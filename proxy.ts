@@ -4,7 +4,7 @@ import { SESSION_COOKIE, verifySessionToken } from "./lib/auth-core.ts";
 import { checkConfig } from "./lib/config.ts";
 
 // Next 16 "proxy" (formerly middleware). Everything except the public paths needs a session (OWASP A01).
-const PUBLIC = (path: string) => path === "/" || path === "/login" || path === "/api/health" || path.startsWith("/api/auth/");
+const PUBLIC = (path: string) => path === "/" || path === "/api/health" || path.startsWith("/api/auth/");
 
 export async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
@@ -26,7 +26,7 @@ export async function proxy(req: NextRequest) {
   if (req.headers.has("next-action")) return new NextResponse("Unauthorized", { status: 401 });
 
   const url = req.nextUrl.clone();
-  url.pathname = "/login";
+  url.pathname = "/";
   url.search = `?next=${encodeURIComponent(pathname + search)}`;
   return NextResponse.redirect(url);
 }
