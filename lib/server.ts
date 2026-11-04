@@ -2,6 +2,7 @@
 // Everything else stays pure; this file is the only one that touches process.env for them.
 import "server-only";
 import { checkConfig, normalizeAppUrl, parseAllowlist } from "./config.ts";
+import { createGmailClient } from "./gmail.ts";
 import { createGoogleClient } from "./google.ts";
 import { normalizePrivateKey } from "./pem.ts";
 import { createSheetsClient } from "./sheets-client.ts";
@@ -44,4 +45,10 @@ export function getGoogle() {
   const s = authSettings();
   google ??= createGoogleClient({ clientId: s.clientId, clientSecret: s.clientSecret, redirectUri: s.redirectUri });
   return google;
+}
+
+/** Gmail read access for the Sync button. A separate redirect URI from sign-in: register both in Google Cloud. */
+export function getGmail() {
+  const s = authSettings();
+  return createGmailClient({ clientId: s.clientId, clientSecret: s.clientSecret, redirectUri: `${s.appUrl}/api/gmail/callback` });
 }

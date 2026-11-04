@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-04 (Gmail sync)
+
+- Sync Gmail backend: `/api/gmail/start` and `/api/gmail/callback` ask Google for read-only Gmail access for one sync (PKCE, state, mailbox must match the signed-in user), read up to 50 job-board alert emails from the last 30 days, store only parsed jobs, keep no token. `lib/gmail.ts`, `lib/sync.ts`, `store.insertMany` + `SheetsApi.appendRows` (one write for many rows).
+- Setup: add `APP_URL/api/gmail/callback` as a second redirect URI and enable the Gmail API.
+
 ## 2026-11-04 (jobs parser)
 
 - MVP scope cut: v1.0.0 = sign-in, Gmail alert parsing, Sheets, job list. Resume score, digest and AI move to v1.1.

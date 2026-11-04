@@ -10,6 +10,8 @@ export interface SheetsApi {
   /** Creates the tab with a header row when it does not exist yet; never touches an existing tab. */
   ensureTab(tab: string, headers: readonly string[]): Promise<void>;
   appendRow(tab: string, row: Cell[]): Promise<void>;
+  /** One request for many rows (Sheets limits writes per minute, so bulk inserts must not loop). */
+  appendRows(tab: string, rows: Cell[][]): Promise<void>;
   updateRow(tab: string, rowNumber: number, row: Cell[]): Promise<void>;
   deleteRows(tab: string, rowNumbers: number[]): Promise<void>;
 }
