@@ -13,7 +13,29 @@ export interface SessionUser {
   /** Row id in the `users` tab; the `userId` every store call is scoped by. */
   uid: string;
   email: string;
+  /** Display name from Google, for the greeting. Optional: older sessions don't have it. */
+  name?: string;
+  /** Google profile image URL, already checked by `safePictureUrl`. Optional. */
+  picture?: string;
 }
+
+const PICTURE_HOST = "lh3.googleusercontent.com"; // the only image host the CSP allows (A08)
+
+/** A profile image URL we are willing to put in an <img>: https, Google's image host, no credentials, bounded length. */
+export function safePictureUrl(v: unknown): string | undefined {
+  if (typeof v !== "string" || v.length > 400) return undefined;
+  try {
+    const u = new URL(v);
+    return u.protocol === "https:" && u.hostname === PICTURE_HOST && !u.username && !u.password ? u.href : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const cleanName = (v: unknown): string | undefined => {
+  const s = typeof v === "string" ? v.replace(/[\u0000-\u001f]/g, "").trim().slice(0, 60) : "";
+  return s || undefined;
+};
 
 export function toBase64Url(bytes: Uint8Array): string {
   let bin = "";
@@ -62,12 +84,19 @@ async function verify(token: string | undefined, secret: string, kind: Kind, now
 }
 
 export const createSessionToken = (secret: string, user: SessionUser, nowMs = Date.now()) =>
-  sign(secret, "s", { uid: user.uid, email: user.email }, SESSION_TTL_SECONDS, nowMs);
+  sign(
+    secret, "s",
+    { uid: user.uid, email: user.email, name: cleanName(user.name), pic: safePictureUrl(user.picture) },
+    SESSION_TTL_SECONDS, nowMs,
+  );
 
 /** The signed-in person, or null for a missing, expired, tampered or wrong-kind token. */
 export async function verifySessionToken(token: string | undefined, secret: string, nowMs = Date.now()): Promise<SessionUser | null> {
   const body = await verify(token, secret, "s", nowMs);
-  return body && typeof body.uid === "string" && typeof body.email === "string" ? { uid: body.uid, email: body.email } : null;
+  if (!body || typeof body.uid !== "string" || typeof body.email !== "string") return null;
+  const name = cleanName(body.name);
+  const picture = safePictureUrl(body.pic);
+  return { uid: body.uid, email: body.email, ...(name ? { name } : {}), ...(picture ? { picture } : {}) };
 }
 
 export interface OAuthState {
