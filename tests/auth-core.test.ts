@@ -54,3 +54,15 @@ test("rate limiter: allows the limit, then refuses until the window passes", () 
   assert.equal(limiter.take("other", 2), true);
   assert.equal(limiter.take("ip", 1001), true);
 });
+
+test("session carries name and a Google profile image, and refuses any other image host", async () => {
+  const secret = "s".repeat(40);
+  const pic = "https://lh3.googleusercontent.com/a/abc=s96-c";
+  const ok = await verifySessionToken(await createSessionToken(secret, { uid: "u1", email: "a@b.co", name: "  Mus  ", picture: pic }), secret);
+  assert.deepEqual(ok, { uid: "u1", email: "a@b.co", name: "Mus", picture: pic });
+
+  for (const bad of ["http://lh3.googleusercontent.com/a", "https://evil.example/a.png", "https://lh3.googleusercontent.com.evil.example/a", "javascript:alert(1)", "https://u:p@lh3.googleusercontent.com/a"]) {
+    const user = await verifySessionToken(await createSessionToken(secret, { uid: "u1", email: "a@b.co", picture: bad }), secret);
+    assert.deepEqual(user, { uid: "u1", email: "a@b.co" }, bad);
+  }
+});

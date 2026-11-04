@@ -63,7 +63,7 @@ Built with a Claude Code agent team (`/team <idea>`): Product Owner, Senior Arch
 ## Project structure
 
 ```
-app/                  Next.js routes (landing with sign-in, dashboard, api/health, api/auth/*)
+app/                  Next.js routes (landing, login, dashboard, api/health, api/auth/*, api/account/delete)
 components/           Shared UI pieces (icons, Google mark); `ui/` holds our wrappers over the look library; FlyonUI theme lives in app/globals.css
 proxy.ts              route guard (session check, fail closed)
 lib/                  config checks, tenant-scoped store + users (`store.ts`), Sheets client, schema, cell guard,
