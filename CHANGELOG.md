@@ -4,6 +4,9 @@
 
 - Dashboard: summary cards (jobs, last 7 days, salary stated), search plus source and "salary stated" filters (plain GET form, shareable URL), "received" dates, a "no jobs match" state, and a loading skeleton.
 - "Delete my data": `POST /api/account/delete` (same-site, signed-in, must type DELETE) removes the user's rows in every tenant tab and signs them out. The `users` row (email, name) stays; removing it needs a store change and is a follow-up.
+## 2026-11-04 (remove /login page)
+
+- Removed the separate `/login` page: the landing page's buttons start Google sign-in directly and show sign-in errors (`/?error=`). Signed-out visitors, failed sign-ins and sign-out now go to `/`; `?next=` is still passed through `safeNext()`.
 
 ## 2026-11-04 (animated landing)
 

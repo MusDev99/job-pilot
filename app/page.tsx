@@ -1,7 +1,8 @@
 import { GoogleIcon } from "@/components/google-icon";
 import { Icon, type IconName } from "@/components/icons";
 import { LandingPreview } from "@/components/landing-preview";
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonAnchor } from "@/components/ui/button";
+import { safeNext } from "@/lib/auth-core";
 
 // Miller: four short chunks, each in its own card (Common Region). Only what v1.0.0 really does.
 const FEATURES = [
@@ -11,7 +12,17 @@ const FEATURES = [
   { icon: "lock", title: "Private", body: "Read-only, no emails stored" },
 ] as const satisfies readonly { icon: IconName; title: string; body: string }[];
 
-export default function Home() {
+const ERRORS: Record<string, string> = {
+  "1": "We couldn't sign you in. Please try again.",
+  unavailable: "Sign-in is temporarily unavailable. Please try again in a few minutes.",
+};
+
+// Sign-in has no page of its own: the buttons here start Google sign-in, and failures land back here (`?error=`).
+export default async function Home({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
+  const { next, error } = await searchParams;
+  const message = error ? (ERRORS[error] ?? ERRORS["1"]) : null;
+  const signIn = `/api/auth/google?next=${encodeURIComponent(safeNext(next))}`;
+
   return (
     <div className="glow min-h-dvh overflow-x-clip">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
@@ -19,9 +30,9 @@ export default function Home() {
           Job<span className="text-primary">Pilot</span>
         </span>
         {/* Von Restorff: the filled button is reserved for the one primary action, so the nav link is quiet. */}
-        <ButtonLink href="/login" variant="soft">
+        <ButtonAnchor href={signIn} variant="soft">
           Sign in
-        </ButtonLink>
+        </ButtonAnchor>
       </header>
 
       <main className="mx-auto grid w-full max-w-6xl items-center gap-14 px-5 pb-20 pt-8 lg:grid-cols-2 lg:gap-10 lg:pt-16">
@@ -49,11 +60,17 @@ export default function Home() {
             ))}
           </ul>
 
+          {message && (
+            <div role="alert" className="flex items-start gap-3 rounded-box border border-danger bg-danger/10 p-3 text-sm text-text">
+              <Icon name="alert" className="size-5 shrink-0 text-danger" />
+              <span>{message}</span>
+            </div>
+          )}
           {/* Fitts: large, full-width on phones. Jakob: the familiar Google sign-in. */}
-          <ButtonLink href="/login" variant="primary" size="lg" className="w-full gap-3">
+          <ButtonAnchor href={signIn} variant="primary" size="lg" className="w-full gap-3">
             <GoogleIcon />
             Continue with Google
-          </ButtonLink>
+          </ButtonAnchor>
           <p className="text-center text-xs text-muted">We only ask for your name and email to sign you in. Gmail access is asked separately, read-only, when you press Sync.</p>
         </section>
 

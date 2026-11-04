@@ -20,9 +20,9 @@ export async function requireSession(): Promise<SessionUser> {
   return user;
 }
 
-/** For pages: sends signed-out visitors to /login. */
+/** For pages: sends signed-out visitors to the landing page (`/`). */
 export async function requirePageSession(): Promise<SessionUser> {
   const user = await currentUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/");
   return user;
 }

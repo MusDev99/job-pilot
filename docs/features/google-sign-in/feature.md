@@ -10,7 +10,7 @@ Written by the lead in the Product Owner role. Depends on the data layer (`docs/
 
 | ID | Given | When | Then |
 |---|---|---|---|
-| AC1 | A signed-out visitor | Opens `/dashboard` (or any private page) | Is sent to `/login`, and after signing in lands back where they were |
+| AC1 | A signed-out visitor | Opens `/dashboard` (or any private page) | Is sent to the landing page (`/`, which has the sign-in button), and after signing in lands back where they were |
 | AC2 | A new person signs in with Google | Google confirms their verified email | A user row is created and a 24-hour session starts |
 | AC3 | Anything goes wrong (cancelled at Google, tampered state, bad token, deactivated or non-allowlisted user) | They return to the app | They see one generic message; the real reason is only in the server log |
 | AC4 | The data store is down | Someone signs in | They see "temporarily unavailable", never "not registered" |

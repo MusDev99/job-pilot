@@ -55,7 +55,7 @@ Four Claude Code subagents in `.claude/agents/`, run by `/team` (`.claude/comman
 
 | Risk | Rule in this repo |
 |---|---|
-| A01 Access control | Every route except `/`, `/login`, `/api/auth/*` and `/api/health` needs a session; every server action calls `await requireSession()` first; every store call is scoped by `userId`. Redirect targets go through `safeNext()` |
+| A01 Access control | Every route except `/`, `/api/auth/*` and `/api/health` needs a session; every server action calls `await requireSession()` first; every store call is scoped by `userId`. Redirect targets go through `safeNext()` |
 | A02 Crypto | Secrets only in env. Sessions are HMAC-signed, `HttpOnly`, `SameSite=Lax`, `Secure` in prod. OAuth uses `state` + `nonce` + PKCE and verifies the ID token. Gmail refresh tokens are encrypted at rest. Never hand-roll other crypto |
 | A03 Injection | Validate + trim on the server; formula-injection guard on every cell write; no `dangerouslySetInnerHTML`; links only http(s) |
 | A04 Design | Fail closed: production without auth configuration returns 503 (`checkConfig` in `lib/config.ts`) |

@@ -54,7 +54,7 @@ To prepare the sheet (needed from the sign-in slice on): create a Google Sheet, 
 3. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `APP_URL` (the origin, no trailing slash) and `AUTH_SECRET` (`openssl rand -base64 48`). Optionally `SIGNUP_ALLOWLIST=you@example.com,friend@example.com`.
 4. Create the data store: enable the **Google Sheets API**, create a service account and a key, create a Google Sheet and share it with the service account's email as **Editor**; set the three `SHEETS_*` / `GOOGLE_SERVICE_ACCOUNT_*` variables.
 
-Flow: `/api/auth/google` (state + nonce + PKCE, signed 10-minute cookie) → Google → `/api/auth/callback` (verifies state, exchanges the code, checks the ID token's signature, issuer, audience, expiry, nonce and verified email, then finds or creates the user) → 24-hour signed `HttpOnly` session cookie. `proxy.ts` guards every route except `/`, `/login`, `/api/health` and `/api/auth/*`; without configuration, production answers 503.
+Flow: `/api/auth/google` (state + nonce + PKCE, signed 10-minute cookie) → Google → `/api/auth/callback` (verifies state, exchanges the code, checks the ID token's signature, issuer, audience, expiry, nonce and verified email, then finds or creates the user) → 24-hour signed `HttpOnly` session cookie. `proxy.ts` guards every route except `/`, `/api/health` and `/api/auth/*`; without configuration, production answers 503.
 
 ## Team and workflow
 
