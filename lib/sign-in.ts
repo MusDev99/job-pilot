@@ -57,5 +57,13 @@ export async function completeSignIn(input: CallbackInput, deps: CallbackDeps): 
     ...(claims.picture ? { picture: claims.picture } : {}),
   });
   if (!result.ok) return { ok: false, reason: result.reason };
-  return { ok: true, user: { uid: result.user.id, email: result.user.email }, next: safeNext(pending.next) };
+  return {
+    ok: true,
+    user: {
+      uid: result.user.id, email: result.user.email,
+      ...(claims.name ? { name: claims.name } : {}),
+      ...(claims.picture ? { picture: claims.picture } : {}),
+    },
+    next: safeNext(pending.next),
+  };
 }
