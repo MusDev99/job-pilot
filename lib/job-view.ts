@@ -57,3 +57,61 @@ export function syncBanner(sync: string | undefined, added: string | undefined):
     default: return null;
   }
 }
+
+export interface JobFilters {
+  q: string;
+  source: string;
+  salaryOnly: boolean;
+}
+
+type Param = string | string[] | undefined;
+const first = (v: Param): string => (Array.isArray(v) ? (v[0] ?? "") : (v ?? "")).trim().slice(0, 100);
+
+/** Filters from the URL query. Untrusted: trimmed and length-capped; unknown shapes become "no filter". */
+export function parseFilters(params: { q?: Param; source?: Param; salary?: Param }): JobFilters {
+  return { q: first(params.q), source: first(params.source), salaryOnly: first(params.salary) === "1" };
+}
+
+export const hasFilters = (f: JobFilters): boolean => f.q !== "" || f.source !== "" || f.salaryOnly;
+
+/** Case-insensitive match on title, company, location and skills. Keeps the input order. */
+export function filterJobs(jobs: JobView[], f: JobFilters): JobView[] {
+  const q = f.q.toLowerCase();
+  return jobs.filter((j) => {
+    if (f.source && j.source !== f.source) return false;
+    if (f.salaryOnly && !j.salary) return false;
+    if (!q) return true;
+    return [j.title, j.company, j.location, ...j.skills].some((part) => part?.toLowerCase().includes(q));
+  });
+}
+
+export interface JobStats {
+  total: number;
+  lastWeek: number;
+  withSalary: number;
+  sources: string[];
+}
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Summary numbers for the dashboard cards. `now` is passed in so this stays pure. */
+export function jobStats(jobs: JobView[], now: Date): JobStats {
+  const cutoff = now.getTime() - WEEK_MS;
+  return {
+    total: jobs.length,
+    lastWeek: jobs.filter((j) => Date.parse(j.receivedAt) >= cutoff).length,
+    withSalary: jobs.filter((j) => j.salary).length,
+    sources: [...new Set(jobs.map((j) => j.source))].sort((a, b) => a.localeCompare(b)),
+  };
+}
+
+/** "today", "yesterday", "3 days ago", then a plain date. Empty for a missing or invalid date. */
+export function receivedAgo(iso: string, now: Date): string {
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return "";
+  const days = Math.floor((now.getTime() - t) / (24 * 60 * 60 * 1000));
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 7) return `${days} days ago`;
+  return new Date(t).toISOString().slice(0, 10);
+}

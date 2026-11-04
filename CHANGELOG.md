@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-05 (dashboard complete)
+
+- Dashboard: summary cards (jobs, last 7 days, salary stated), search plus source and "salary stated" filters (plain GET form, shareable URL), "received" dates, a "no jobs match" state, and a loading skeleton.
+- "Delete my data": `POST /api/account/delete` (same-site, signed-in, must type DELETE) removes the user's rows in every tenant tab and signs them out. The `users` row (email, name) stays; removing it needs a store change and is a follow-up.
+
 ## 2026-11-04 (animated landing)
 
 - Landing page redesigned: split hero ("All your job alerts. One clean list."), four feature cards, one Google button, and an animated app preview (rows rise in, sync ring draws, badges float). CSS only, transform/opacity, switched off under reduced motion. Copy now matches what v1.0.0 does (no match score or tailoring claims). New `--color-success` token, `components/landing-preview.tsx`.
