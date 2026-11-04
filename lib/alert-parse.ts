@@ -75,13 +75,24 @@ const BOARDS: Board[] = [
   },
 ];
 
+const NAMED: Record<string, string> = {
+  nbsp: " ", lt: "<", gt: ">", quot: '"', apos: "'", middot: "·", bull: "•", ndash: "–", mdash: "—",
+  hellip: "…", rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“", copy: "©", reg: "®", trade: "™", euro: "€", pound: "£",
+};
+
+/** Decodes the entities alert emails really use. `&amp;` goes last so "&amp;lt;" stays the text "&lt;". */
 const decodeEntities = (s: string) =>
-  s.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)));
+  s.replace(/&([a-z]+);/gi, (m, name: string) => NAMED[name.toLowerCase()] ?? m)
+    .replace(/&#x([0-9a-f]+);/gi, (m, n: string) => codePoint(parseInt(n, 16), m))
+    .replace(/&#(\d+);/g, (m, n: string) => codePoint(Number(n), m))
+    .replace(/&amp;/g, "&");
+
+const codePoint = (n: number, fallback: string) => (n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : fallback);
 
 /** HTML fragment -> lines of visible text. */
 function toLines(html: string): string[] {
   const text = html
+    .replace(/<[^>]*$/, "") // a slice can end inside a tag: drop the unfinished tag instead of showing its attributes
     .replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ")
     .replace(/<\s*(br|\/p|\/div|\/tr|\/li|\/h\d|\/td)\b[^>]*>/gi, "\n")
     .replace(/<[^>]+>/g, " ");

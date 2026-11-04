@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-05 (alert parser fix)
+
+- Fix: `&middot;`, `&bull;`, dashes, quotes and hex entities in alert emails are decoded, and a tag cut by the 1500-character slice no longer leaks its attributes into company or location. Jobs already saved keep their old text (sync de-duplicates by link): use Delete my data and sync again to refresh them.
+
 ## 2026-11-04 (remove /login page)
 
 - Removed the separate `/login` page: the landing page's buttons start Google sign-in directly and show sign-in errors (`/?error=`). Signed-out visitors, failed sign-ins and sign-out now go to `/`; `?next=` is still passed through `safeNext()`.

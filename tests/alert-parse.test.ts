@@ -83,3 +83,12 @@ test("html entities in titles are decoded and tags stripped", () => {
   const jobs = parseAlert({ ...base, html: `<a href="https://www.linkedin.com/jobs/view/4012345678"><b>R&amp;D Engineer</b></a>` });
   assert.equal(jobs[0]?.title, "R&D Engineer");
 });
+
+test("entities like &middot; are decoded and a tag cut by the slice never leaks into the text", () => {
+  const html =
+    '<a href="https://www.linkedin.com/jobs/view/4000000001">Dev</a><div>Acme &middot; Kuala Lumpur (Hybrid)</div>' +
+    `<td class="job-card-flavor__container" style="-webkit${"x ".repeat(900)}`;
+  const [job] = parseAlert({ messageId: "m", from: "jobs-noreply@linkedin.com", subject: "s", text: "", html, receivedAt: "2026-11-05T00:00:00.000Z" });
+  assert.equal(job?.company, "Acme");
+  assert.equal(job?.location, "Kuala Lumpur (Hybrid)");
+});
