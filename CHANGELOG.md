@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-05 (dashboard redesign)
+
+- Redesigned the dashboard with FlyonUI: sticky navbar with avatar and sign-out, hero with the one filled Sync button, stat cards with icons, search plus salary switch and source chips, two-column job cards (company tile, New badge, salary highlight, skills, Open posting), a three-step first-run state, and a skeleton shaped like the page.
+- New wrappers `components/ui/alert.tsx` and `stat-card.tsx`; new `components/dashboard/*`; `Button` gains `ghost` and `danger`; soft buttons use light text for contrast.
+
 ## 2026-11-05 (dashboard complete)
 
 - Dashboard: summary cards (jobs, last 7 days, salary stated), search plus source and "salary stated" filters (plain GET form, shareable URL), "received" dates, a "no jobs match" state, and a loading skeleton.
