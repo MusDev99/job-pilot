@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { GoogleIcon } from "@/components/google-icon";
 import { Icon, type IconName } from "@/components/icons";
+import { ButtonLink } from "@/components/ui/button";
 
 const STEPS = [
   { icon: "mail", title: "Connect Gmail", body: "JobPilot reads only the job alert emails already in your inbox." },
@@ -14,9 +14,9 @@ export default function Home() {
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-4">
         <span className="text-lg font-semibold tracking-tight">JobPilot</span>
         {/* Von Restorff: the filled button is reserved for the one primary action, so the nav link is quiet. */}
-        <Link href="/login" className="btn btn-soft btn-primary min-h-11">
+        <ButtonLink href="/login" variant="soft">
           Sign in
-        </Link>
+        </ButtonLink>
       </header>
 
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-5 pb-20 pt-10 sm:pt-20">
@@ -29,10 +29,10 @@ export default function Home() {
             JobPilot turns the job alerts in your inbox into one list, scored against your resume, so you spend time on the roles that fit.
           </p>
           {/* Fitts: large, full-width on phones, 44px+ target. Jakob: the familiar Google sign-in. */}
-          <Link href="/login" className="btn btn-primary btn-lg min-h-12 w-full gap-3 sm:w-auto">
+          <ButtonLink href="/login" variant="primary" size="lg" className="w-full gap-3 sm:w-auto">
             <GoogleIcon />
             Continue with Google
-          </Link>
+          </ButtonLink>
           <p className="text-sm text-muted">We only ask for your name and email to sign you in.</p>
         </section>
 

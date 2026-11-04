@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-04 (UI scaffold and page states)
+
+- New `components/ui/button.tsx` (`Button`, `ButtonLink`, `ButtonAnchor`): pages no longer use FlyonUI button classes directly, so the look library can be swapped in one place.
+- Added `app/loading.tsx`, `app/error.tsx` (generic message, details to `console.error`) and `app/not-found.tsx`.
+- Documented why `themeColor` repeats `--color-bg`.
+
 ## 2026-11-01 (landing and login redesign)
 
 - Redesigned the landing page (hero, how it works, privacy note) and the sign-in page (centred card, inline error) with FlyonUI 2.4.1 themed from our tokens (`@plugin "flyonui/theme"` in `globals.css`). No horizontal scroll at 375px.

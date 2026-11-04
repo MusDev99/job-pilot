@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GoogleIcon } from "@/components/google-icon";
 import { Icon } from "@/components/icons";
+import { ButtonAnchor } from "@/components/ui/button";
 import { safeNext } from "@/lib/auth-core";
 
 const ERRORS: Record<string, string> = {
@@ -31,10 +32,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             </div>
           )}
           {/* Von Restorff: the one filled button. Fitts: 48px, full width. Jakob: the familiar Google button. */}
-          <a href={href} className="btn btn-primary btn-lg min-h-12 w-full gap-3">
+          <ButtonAnchor href={href} variant="primary" size="lg" className="w-full gap-3">
             <GoogleIcon />
             Continue with Google
-          </a>
+          </ButtonAnchor>
           <p className="text-center text-xs text-muted">We only ask for your name and email. No password to remember.</p>
         </div>
       </div>

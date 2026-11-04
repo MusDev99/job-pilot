@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // The meta tag cannot read CSS variables: keep in sync with --color-bg in globals.css.
   themeColor: "#0b1020",
 };
 

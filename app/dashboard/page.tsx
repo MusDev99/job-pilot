@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { requirePageSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -9,9 +10,7 @@ export default async function DashboardPage() {
       <header className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-semibold tracking-tight">Your jobs</h1>
         <form method="post" action="/api/auth/logout">
-          <button type="submit" className="min-h-11 rounded-card border border-border px-5 text-sm">
-            Sign out
-          </button>
+          <Button type="submit">Sign out</Button>
         </form>
       </header>
       <p className="text-muted">Signed in as {user.email}.</p>

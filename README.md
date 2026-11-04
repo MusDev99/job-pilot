@@ -62,7 +62,7 @@ Built with a Claude Code agent team (`/team <idea>`): Product Owner, Senior Arch
 
 ```
 app/                  Next.js routes (landing, login, dashboard, api/health, api/auth/*)
-components/           Shared UI pieces (icons, Google mark); FlyonUI theme lives in app/globals.css
+components/           Shared UI pieces (icons, Google mark); `ui/` holds our wrappers over the look library; FlyonUI theme lives in app/globals.css
 proxy.ts              route guard (session check, fail closed)
 lib/                  config checks, tenant-scoped store + users (`store.ts`), Sheets client, schema, cell guard,
                       sessions (`auth-core.ts`), Google OIDC (`oidc.ts`, `google.ts`), sign-in decision (`sign-in.ts`)
