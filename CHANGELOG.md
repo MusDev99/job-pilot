@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-05 (more Gmail job sources)
+
+- Sync now also searches alert senders and recognises job links from Hiredly, Maukerja, Jora, Kalibrr, Monster, ZipRecruiter, We Work Remotely, Remote OK, Michael Page and Hays, on top of LinkedIn, Indeed, JobStreet, Jobsdb, Seek, Glassdoor and Wellfound. Still limited to these sender domains (CLAUDE.md Gmail rule). The new link shapes are best guesses until real alert samples arrive.
 ## 2026-11-05 (dashboard header)
 
 - New floating header with an interactive account menu (Radix `DropdownMenu` via `components/ui/dropdown-menu.tsx`: keyboard, focus and Escape handled) showing the Google profile image, name and email, with Sync Gmail and Sign out. Adds `radix-ui` 1.8.1 (exact, lockfile committed, `npm audit` clean).

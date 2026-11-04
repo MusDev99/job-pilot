@@ -10,6 +10,8 @@ const API = "https://gmail.googleapis.com/gmail/v1/users/me";
 // Job-board sender domains the search is limited to (CLAUDE.md: queries limited to job alert senders).
 export const ALERT_SENDER_DOMAINS = [
   "linkedin.com", "indeed.com", "jobstreet.com", "jobsdb.com", "seek.com", "glassdoor.com", "wellfound.com",
+  "hiredly.com", "maukerja.my", "jora.com", "kalibrr.com", "monster.com", "ziprecruiter.com",
+  "weworkremotely.com", "remoteok.com", "michaelpage.com", "hays.com",
 ] as const;
 
 export const alertQuery = (days: number) => `from:(${ALERT_SENDER_DOMAINS.join(" OR ")}) newer_than:${Math.max(1, Math.floor(days))}d`;
