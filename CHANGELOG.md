@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-04 (hosting: Vercel for now)
+
+- Docs only: deployment moves from Netlify to Vercel. README deploy steps, `.env.example`, CLAUDE.md and decision record 0001 (with an update note) now name Vercel; the inbox sync is planned on Vercel Cron. `netlify.toml` is kept until Netlify is retired.
+
 ## 2026-11-04 (UI scaffold and page states)
 
 - New `components/ui/button.tsx` (`Button`, `ButtonLink`, `ButtonAnchor`): pages no longer use FlyonUI button classes directly, so the look library can be swapped in one place.
