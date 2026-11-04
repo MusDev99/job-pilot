@@ -1,73 +1,64 @@
 import { GoogleIcon } from "@/components/google-icon";
 import { Icon, type IconName } from "@/components/icons";
+import { LandingPreview } from "@/components/landing-preview";
 import { ButtonLink } from "@/components/ui/button";
 
-const STEPS = [
-  { icon: "mail", title: "Connect Gmail", body: "JobPilot reads only the job alert emails already in your inbox." },
-  { icon: "list", title: "See one clean list", body: "Role, company, skills and salary pulled out, or \"not stated\" when unsure." },
-  { icon: "target", title: "Know your fit", body: "Every job scored 0 to 100 against your ATS resume, with matching and missing skills." },
+// Miller: four short chunks, each in its own card (Common Region). Only what v1.0.0 really does.
+const FEATURES = [
+  { icon: "mail", title: "Collect", body: "Job alerts from your Gmail" },
+  { icon: "list", title: "Extract", body: "Skills, salary, seniority" },
+  { icon: "target", title: "One list", body: "Newest first, one tap to apply" },
+  { icon: "lock", title: "Private", body: "Read-only, no emails stored" },
 ] as const satisfies readonly { icon: IconName; title: string; body: string }[];
 
 export default function Home() {
   return (
-    <div className="glow min-h-dvh">
-      <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-4">
-        <span className="text-lg font-semibold tracking-tight">JobPilot</span>
+    <div className="glow min-h-dvh overflow-x-clip">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
+        <span className="text-lg font-semibold tracking-tight">
+          Job<span className="text-primary">Pilot</span>
+        </span>
         {/* Von Restorff: the filled button is reserved for the one primary action, so the nav link is quiet. */}
         <ButtonLink href="/login" variant="soft">
           Sign in
         </ButtonLink>
       </header>
 
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-5 pb-20 pt-10 sm:pt-20">
-        <section className="flex flex-col items-center gap-6 text-center">
-          <span className="badge badge-soft badge-primary">Free while in beta</span>
-          <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
-            Fewer, better applications. Ranked by fit.
+      <main className="mx-auto grid w-full max-w-6xl items-center gap-14 px-5 pb-20 pt-8 lg:grid-cols-2 lg:gap-10 lg:pt-16">
+        <section className="flex flex-col gap-6">
+          <h1 className="lp-rise text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
+            All your job alerts.
+            <br />
+            <span className="lp-headline">One clean list.</span>
           </h1>
-          <p className="max-w-xl text-pretty text-lg text-muted">
-            JobPilot turns the job alerts in your inbox into one list, scored against your resume, so you spend time on the roles that fit.
+          <p className="lp-rise max-w-lg text-pretty text-lg text-muted" style={{ "--d": "0.1s" } as React.CSSProperties}>
+            JobPilot reads the job alert emails in your Gmail and pulls out the role, company, skills and salary, so you scan instead of dig.
           </p>
-          {/* Fitts: large, full-width on phones, 44px+ target. Jakob: the familiar Google sign-in. */}
-          <ButtonLink href="/login" variant="primary" size="lg" className="w-full gap-3 sm:w-auto">
-            <GoogleIcon />
-            Continue with Google
-          </ButtonLink>
-          <p className="text-sm text-muted">We only ask for your name and email to sign you in.</p>
-        </section>
 
-        {/* Miller / Common Region: three steps, each in its own card. */}
-        <section aria-labelledby="how" className="flex flex-col gap-6">
-          <h2 id="how" className="text-center text-2xl font-semibold tracking-tight">
-            How it works
-          </h2>
-          <ol className="grid gap-4 sm:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <li key={step.title} className="card border border-border bg-surface">
-                <div className="card-body gap-3">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-primary/15 text-primary">
-                    <Icon name={step.icon} />
-                  </span>
-                  <h3 className="card-title text-base">
-                    <span className="text-muted">{i + 1}.</span> {step.title}
-                  </h3>
-                  <p className="text-sm text-muted">{step.body}</p>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {FEATURES.map((f, i) => (
+              <li key={f.title} className="lp-rise flex items-start gap-3 rounded-box border border-border bg-surface/70 p-4" style={{ "--d": `${0.2 + i * 0.08}s` } as React.CSSProperties}>
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                  <Icon name={f.icon} />
+                </span>
+                <div>
+                  <h2 className="text-sm font-medium">{f.title}</h2>
+                  <p className="text-xs text-muted">{f.body}</p>
                 </div>
               </li>
             ))}
-          </ol>
+          </ul>
+
+          {/* Fitts: large, full-width on phones. Jakob: the familiar Google sign-in. */}
+          <ButtonLink href="/login" variant="primary" size="lg" className="w-full gap-3">
+            <GoogleIcon />
+            Continue with Google
+          </ButtonLink>
+          <p className="text-center text-xs text-muted">We only ask for your name and email to sign you in. Gmail access is asked separately, read-only, when you press Sync.</p>
         </section>
 
-        <section className="flex flex-col items-center gap-3 rounded-box border border-border bg-surface p-8 text-center">
-          <Icon name="shield" className="size-7 text-primary" />
-          <h2 className="text-xl font-semibold">Your data stays yours</h2>
-          <p className="max-w-lg text-sm text-muted">
-            Read-only Gmail access, job alerts only. Your resume is read in memory and only the structured profile is kept. Disconnect and delete everything any time.
-          </p>
-        </section>
+        <LandingPreview />
       </main>
-
-      <footer className="border-t border-border px-5 py-6 text-center text-sm text-muted">JobPilot</footer>
     </div>
   );
 }

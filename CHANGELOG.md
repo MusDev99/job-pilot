@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-04 (animated landing)
+
+- Landing page redesigned: split hero ("All your job alerts. One clean list."), four feature cards, one Google button, and an animated app preview (rows rise in, sync ring draws, badges float). CSS only, transform/opacity, switched off under reduced motion. Copy now matches what v1.0.0 does (no match score or tailoring claims). New `--color-success` token, `components/landing-preview.tsx`.
+
 ## 2026-11-04 (UI scaffold and page states)
 
 - New `components/ui/button.tsx` (`Button`, `ButtonLink`, `ButtonAnchor`): pages no longer use FlyonUI button classes directly, so the look library can be swapped in one place.
