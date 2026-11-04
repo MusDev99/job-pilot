@@ -32,6 +32,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   return (
     <DashboardView
       email={user.email}
+      name={user.name}
+      picture={user.picture}
       jobs={jobs}
       shown={filterJobs(jobs, filters)}
       stats={jobStats(jobs, now)}

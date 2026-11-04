@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-05 (dashboard header)
+
+- New floating header with an interactive account menu (Radix `DropdownMenu` via `components/ui/dropdown-menu.tsx`: keyboard, focus and Escape handled) showing the Google profile image, name and email, with Sync Gmail and Sign out. Adds `radix-ui` 1.8.1 (exact, lockfile committed, `npm audit` clean).
+- The session cookie now also carries the Google name and profile image URL; the URL is only accepted if it is https on `lh3.googleusercontent.com` (already in the CSP). Existing sessions show an initial until the next sign-in.
+- Sync Gmail button shows "Opening Google…" while the redirect happens.
+
 ## 2026-11-05 (dashboard redesign)
 
 - Redesigned the dashboard with FlyonUI: sticky navbar with avatar and sign-out, hero with the one filled Sync button, stat cards with icons, search plus salary switch and source chips, two-column job cards (company tile, New badge, salary highlight, skills, Open posting), a three-step first-run state, and a skeleton shaped like the page.

@@ -17,6 +17,7 @@ const PATHS = {
   trash: "M4 7h16M10 11v6m4-6v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3",
   refresh: "M20 11a8 8 0 0 0-14.5-3M4 5v4h4m-4 4a8 8 0 0 0 14.5 3M20 19v-4h-4",
   building: "M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M14 9h5a1 1 0 0 1 1 1v11M3 21h18M8 8h2M8 12h2M8 16h2",
+  chevron: "m6 9 6 6 6-6",
   alert: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-13v5m0 3h.01",
 } as const;
 

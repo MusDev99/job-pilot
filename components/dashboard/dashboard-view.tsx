@@ -1,6 +1,8 @@
 import { Icon } from "@/components/icons";
 import { Alert } from "@/components/ui/alert";
 import { Button, ButtonAnchor } from "@/components/ui/button";
+import { SyncButton } from "@/components/dashboard/sync-button";
+import { UserMenu } from "@/components/dashboard/user-menu";
 import { StatCard } from "@/components/ui/stat-card";
 import { JobCard } from "@/components/dashboard/job-card";
 import { hasFilters } from "@/lib/job-view";
@@ -10,6 +12,8 @@ const SHOWN = 100; // Miller: newest 100 is plenty for an MVP list; paging comes
 
 export interface DashboardProps {
   email: string;
+  name?: string;
+  picture?: string;
   jobs: JobView[]; // everything the user has
   shown: JobView[]; // after filters
   stats: JobStats;
@@ -30,28 +34,22 @@ function filterHref(f: JobFilters, patch: Partial<JobFilters>): string {
   return s ? `/dashboard?${s}` : "/dashboard";
 }
 
-export function DashboardView({ email, jobs, shown, stats, filters, banner, failed, now }: DashboardProps) {
+export function DashboardView({ email, name, picture, jobs, shown, stats, filters, banner, failed, now }: DashboardProps) {
+  const displayName = name ?? email.split("@")[0] ?? email;
   return (
     <div className="glow min-h-dvh">
-      {/* Jakob: a top bar with the brand left and account actions right, like every app. */}
-      <header className="navbar sticky top-0 z-10 border-b border-border bg-base-100/80 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-5">
-          <span className="text-lg font-semibold tracking-tight">
-            Job<span className="text-primary">Pilot</span>
+      {/* A floating glass bar: the brand on the left, the account menu on the right (Jakob). */}
+      <header className="sticky top-3 z-20 mx-auto mt-3 w-[calc(100%-2.5rem)] max-w-5xl rounded-box border border-border bg-base-100/70 px-3 py-2 shadow-lg backdrop-blur-md">
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
+            <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-content">
+              <Icon name="briefcase" className="size-5" />
+            </span>
+            <span>
+              Job<span className="text-primary">Pilot</span>
+            </span>
           </span>
-          <div className="flex items-center gap-2">
-            <div className="avatar avatar-placeholder" title={email}>
-              <div className="w-9 rounded-full bg-primary/15 text-primary">
-                <span className="text-sm font-semibold" aria-hidden="true">{email.charAt(0).toUpperCase()}</span>
-              </div>
-            </div>
-            <span className="hidden max-w-48 truncate text-sm text-muted sm:inline">{email}</span>
-            <form method="post" action="/api/auth/logout">
-              <Button type="submit" variant="ghost" className="btn-square" aria-label="Sign out">
-                <Icon name="logout" />
-              </Button>
-            </form>
-          </div>
+          <UserMenu name={displayName} email={email} picture={picture} />
         </div>
       </header>
 
@@ -59,6 +57,7 @@ export function DashboardView({ email, jobs, shown, stats, filters, banner, fail
         {/* Von Restorff: Sync Gmail is the one filled button on the page. */}
         <section className="lp-rise flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-col gap-2">
+            <p className="text-sm text-muted">Hi, {displayName.split(" ")[0]}</p>
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
               Your <span className="lp-headline">job feed</span>
             </h1>
@@ -69,10 +68,7 @@ export function DashboardView({ email, jobs, shown, stats, filters, banner, fail
             </p>
           </div>
           <div className="flex flex-col gap-1.5 sm:items-end">
-            <ButtonAnchor href="/api/gmail/start" variant="primary" size="lg" className="w-full gap-2 sm:w-auto">
-              <Icon name="refresh" />
-              Sync Gmail
-            </ButtonAnchor>
+            <SyncButton />
             <span className="text-xs text-muted">Reads the last 30 days of alerts. Read-only.</span>
           </div>
         </section>
