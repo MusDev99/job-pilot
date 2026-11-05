@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-05 (animated job cards)
+
+- Job list cards now lift on hover/focus with an accent glow and a gradient top edge, the company avatar tilts, skill chips and the Open arrow nudge, and the "New" badge has a pinging dot. Transform/opacity/shadow only; all motion is off under `prefers-reduced-motion`. No new dependencies.
+
 ## 2026-11-05 (more Gmail job sources)
 
 - Sync now also searches alert senders and recognises job links from Hiredly, Maukerja, Jora, Kalibrr, Monster, ZipRecruiter, We Work Remotely, Remote OK, Michael Page and Hays, on top of LinkedIn, Indeed, JobStreet, Jobsdb, Seek, Glassdoor and Wellfound. Still limited to these sender domains (CLAUDE.md Gmail rule). The new link shapes are best guesses until real alert samples arrive.

@@ -83,3 +83,41 @@ body {
   .lp-rise, .lp-float, .lp-ring, .lp-sweep, .lp-pop { animation: none; }
   .lp-ring { stroke-dashoffset: 25; }
 }
+
+/* Job list cards: lift, accent glow and a gradient edge on hover/focus. Transform/opacity/shadow only; off for reduced motion. */
+@keyframes jc-ping { 75%, 100% { transform: scale(2.2); opacity: 0; } }
+
+.jc {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.25s, border-color 0.25s;
+}
+.jc::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background-image: linear-gradient(90deg, var(--color-accent), var(--color-success));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.jc:hover, .jc:focus-within {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--color-accent) 60%, transparent);
+  box-shadow: 0 12px 28px -12px color-mix(in oklab, var(--color-accent) 45%, transparent);
+}
+.jc:hover::before, .jc:focus-within::before { transform: scaleX(1); }
+.jc-avatar { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.jc:hover .jc-avatar { transform: scale(1.08) rotate(-4deg); }
+.jc-chip { transition: transform 0.2s, background-color 0.2s; }
+.jc-chip:hover { transform: translateY(-1px); background-color: color-mix(in oklab, var(--color-accent) 25%, transparent); }
+.jc-arrow { transition: transform 0.2s; }
+.jc-open:hover .jc-arrow { transform: translate(2px, -2px); }
+.jc-ping { animation: jc-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jc, .jc:hover, .jc:focus-within, .jc:hover .jc-avatar, .jc-chip:hover, .jc-open:hover .jc-arrow { transform: none; }
+  .jc::before { transition: none; }
+  .jc-ping { animation: none; }
+}

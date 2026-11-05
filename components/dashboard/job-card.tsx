@@ -11,11 +11,11 @@ export function JobCard({ job, now, index }: { job: JobView; now: Date; index: n
   const isNew = when === "today";
   return (
     <li
-      className="lp-rise group flex flex-col gap-4 rounded-box border border-border bg-surface/80 p-5 transition-colors hover:border-primary/60"
+      className="lp-rise group flex flex-col gap-4 jc rounded-box border border-border bg-surface/80 p-5"
       style={{ "--d": `${Math.min(index, 8) * 0.05}s` } as React.CSSProperties}
     >
       <div className="flex items-start gap-3">
-        <div className="avatar avatar-placeholder">
+        <div className="avatar avatar-placeholder jc-avatar">
           <div className="w-11 rounded-box bg-primary/15 text-primary">
             <span className="text-lg font-semibold" aria-hidden="true">{(job.company ?? job.title).charAt(0).toUpperCase()}</span>
           </div>
@@ -27,7 +27,15 @@ export function JobCard({ job, now, index }: { job: JobView; now: Date; index: n
             {job.location && <span className="inline-flex items-center gap-1"><Icon name="pin" className="size-4" />{job.location}</span>}
           </p>
         </div>
-        {isNew && <span className="badge badge-soft badge-success">New</span>}
+        {isNew && (
+          <span className="badge badge-soft badge-success gap-1.5">
+            <span className="relative flex size-2" aria-hidden="true">
+              <span className="jc-ping absolute inline-flex size-full rounded-full bg-success" />
+              <span className="relative inline-flex size-2 rounded-full bg-success" />
+            </span>
+            New
+          </span>
+        )}
       </div>
 
       <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -43,7 +51,7 @@ export function JobCard({ job, now, index }: { job: JobView; now: Date; index: n
       {job.skills.length > 0 && (
         <ul className="flex flex-wrap gap-1.5" aria-label="Skills">
           {job.skills.slice(0, MAX_SKILLS).map((skill) => (
-            <li key={skill} className="rounded-full bg-base-300/60 px-2.5 py-1 text-xs">{skill}</li>
+            <li key={skill} className="jc-chip rounded-full bg-base-300/60 px-2.5 py-1 text-xs">{skill}</li>
           ))}
           {job.skills.length > MAX_SKILLS && <li className="px-1 py-1 text-xs text-muted">+{job.skills.length - MAX_SKILLS}</li>}
         </ul>
@@ -55,9 +63,9 @@ export function JobCard({ job, now, index }: { job: JobView; now: Date; index: n
           {when ? `Received ${when}` : "Date unknown"}
         </span>
         {job.url ? (
-          <a href={job.url} target="_blank" rel="noopener noreferrer" className="btn btn-soft btn-primary min-h-11 gap-2 text-text">
+          <a href={job.url} target="_blank" rel="noopener noreferrer" className="jc-open btn btn-soft btn-primary min-h-11 gap-2 text-text">
             Open posting
-            <Icon name="external" className="size-4" />
+            <Icon name="external" className="jc-arrow size-4" />
             <span className="sr-only"> for {job.title} (opens in a new tab)</span>
           </a>
         ) : (
